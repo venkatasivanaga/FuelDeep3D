@@ -19,5 +19,8 @@ vegseg_config <- function(
     learning_rate = 1e-5,
     weight_decay  = 1e-4,
     cell_size     = 0.25,   # HAG grid size (m)
-    quantile      = 0.05
+    quantile      = 0.05,
+    
+    delete_tiles_after_train = TRUE   # <--- turn on deletion
+    
 ) { as.list(environment()) }
