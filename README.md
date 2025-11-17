@@ -84,9 +84,9 @@ install all Python dependencies from `requirements.txt`.
 # 1) Install and load reticulate (once)
 install.packages("reticulate")
 library(reticulate)
+library(vegseg)
 
-# 2) Tell reticulate where Conda lives (optional on most Anaconda installs)
-#    Adjust the path if your Anaconda is somewhere else.
+# 2) (Optional) Attach a base Conda env so reticulate can find conda
 use_condaenv("base", required = FALSE)
 
 # 3) Create a new Conda environment called "pointnext" with Python 3.10
@@ -95,24 +95,15 @@ conda_create(
   packages = "python=3.10"
 )
 
-# 4) Install Python dependencies from requirements.txt using pip
-#    Path to your requirements file inside this repo/package.
-#    Example if it lives at: src/requirements.txt
-req_file <- file.path(getwd(), "src", "requirements.txt")
-# If you're running this from inside the installed package, you can also use:
-# req_file <- system.file("src", "requirements.txt", package = "vegseg")
-
-conda_install(
-  envname  = "pointnext",
-  packages = c("-r", normalizePath(req_file)),
-  pip      = TRUE
-)
+# 4) Install all Python dependencies into that env
+vegseg_install_py_deps("pointnext")
 
 # 5) Activate this environment for the current R session
 use_condaenv("pointnext", required = TRUE)
 
 # Sanity check: should show Python from the "pointnext" env
 py_config()
+
 
 ```
 
