@@ -1,10 +1,10 @@
-#' Default config for vegseg (override values as needed)
+#' Default config 
 #' @export
-vegseg_config <- function(
-    las_path      = "data/trees.las",
-    out_dir       = "data/ds_hag4",
-    out_pred_dir  = "data/output_predictions",
-    model_path    = "data/model/best_model.pth",
+config <- function(
+    las_path      = system.file("extdata", "trees.las", package = "FuelDeep3D"),
+    out_dir       = getwd(),
+    out_pred_dir  = getwd(),
+    model_path    = system.file("extdata", "best_model.pth", package = "FuelDeep3D"),
     device        = NULL,     # NULL => Python picks cuda/cpu
     block_size    = 6.0,
     stride        = 1.0,

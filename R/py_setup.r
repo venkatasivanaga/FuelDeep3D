@@ -1,10 +1,10 @@
-#' Create/use a venv and install Python deps listed in inst/python/requirements.txt
+#' Create/use a venv and install Python deps listed in extdata/python/requirements.txt
 #' @export
-vegseg_py_setup <- function(envdir = NULL) {
-  # Locate the installed python directory from inst/python
-  py_root <- system.file("python", package = "vegseg")
+py_setup <- function(envdir = NULL) {
+  # Locate the installed python directory from extdata/python
+  py_root <- system.file("python", package = "FuelDeep3D")
   if (py_root == "" || !dir.exists(py_root)) {
-    stop("Could not find 'inst/python' directory in the installed 'vegseg' package.")
+    stop("Could not find 'extdata/python' directory in the installed 'FuelDeep3D' package.")
   }
   
   # Default venv location: <package>/python/.venv unless user overrides

@@ -1,9 +1,16 @@
-Package: vegseg
+Package: FuelDeep3D
 Type: Package
-Title: Height-Aware Point Cloud Segmentation (R wrapper for Python)
+Title: 3D Point Cloud Classification for Forest Fuels Using Deep Learning
 Version: 0.1.0
-Authors@R: c(person("Venkata Siva Reddy", "Naga", role = c("aut", "cre"), email = "vs.naga@ufl.edu"), person("Carlos Alberto", "Silva", role = "aut", email = "c.silva@ufl.edu"))
-Description: R interface to your Python HeightAwarePointNetTiny training and inference via reticulate.
+Authors@R: c(
+    person("Venkata Siva Reddy", "Naga", role = c("aut", "cre"), email = "vs.naga@ufl.edu"),
+    person("Carlos Alberto", "Silva", role = "aut", email = "c.silva@ufl.edu"))
+Description: Provides an R interface for training and applying deep learning models
+    to terrestrial laser scanning (TLS) 3D point clouds for forest fuel applications.
+    The package wraps a height-aware PointNet-style architecture,
+    enabling users to build HAG-based features, train classifiers, and generate
+    per-point fuel classes (e.g., stem, branches, canopy, surface fuels) for use in
+    wildfire and fuel complexity analysis workflows.
 Depends: R (>= 4.1)
 Imports:
     reticulate,
@@ -11,7 +18,7 @@ Imports:
 License: MIT
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/venkatasivanaga/Trees_seg
-BugReports: https://github.com/venkatasivanaga/Trees_seg/issues
+URL: https://github.com/venkatasivanaga/FuelDeep3D
+BugReports: https://github.com/venkatasivanaga/FuelDeep3D/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

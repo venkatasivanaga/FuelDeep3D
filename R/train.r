@@ -1,19 +1,19 @@
-#' Train the vegseg model (auto-preprocess if NPZ tiles are missing)
-#' @param cfg list from vegseg_config()
+#' Train the FuelDeep3D model (auto-preprocess if NPZ tiles are missing)
+#' @param cfg list from config()
 #' @param setup_env logical; set TRUE to create/use the package venv
 #' @return list(best_oa, best_epoch, ckpt_path)
 #' @export
-vegseg_train <- function(cfg, setup_env = FALSE) {
+train <- function(cfg, setup_env = FALSE) {
   stopifnot(is.list(cfg))
   
   if (isTRUE(setup_env)) {
-    vegseg_py_setup()
+    py_setup()
   }
   
-  # locate inst/python
-  py_dir <- system.file("python", package = "vegseg")
+  # locate extdata/python
+  py_dir <- system.file("extdata", "python", package = "FuelDeep3D")
   if (py_dir == "" || !dir.exists(py_dir)) {
-    stop("Could not find inst/python directory in installed vegseg package.")
+    stop("Could not find extdata/python directory in installed FuelDeep3D package.")
   }
   
   # ---- 1) Ensure NPZ tiles exist ----

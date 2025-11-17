@@ -1,13 +1,13 @@
 #' Install Python dependencies into a conda environment
 #'
 #' This helper uses `reticulate::conda_install()` with pip to install
-#' all Python packages needed by vegseg into a given conda env.
+#' all Python packages needed by FuelDeep3D into a given conda env.
 #'
 #' @param envname Name of the conda environment (default: "pointnext").
 #'   The environment must already exist (e.g., created with `conda_create()`).
 #' @return Invisibly returns TRUE on success.
 #' @export
-vegseg_install_py_deps <- function(envname = "pointnext") {
+install_py_deps <- function(envname = "pointnext") {
   # Make sure reticulate is available
   if (!requireNamespace("reticulate", quietly = TRUE)) {
     stop("The 'reticulate' package is required. Please install it first.")

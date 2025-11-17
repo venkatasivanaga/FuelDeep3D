@@ -4,12 +4,12 @@
 
 
 
-# vegseg: Tree Segmentation with LiDAR + PyTorch (R + Python)
+# FuelDeep3D: Tree Segmentation with LiDAR + PyTorch (R + Python)
 
 **Authors:** Venkata Siva Reddy Naga, Carlos Alberto Silva, et al.,
 
 
-`vegseg` is an R wrapper around a PyTorch point-cloud model for **tree / vegetation segmentation** from LiDAR `.las` files.  
+`FuelDeep3D` is an R wrapper around a PyTorch point-cloud model for **tree / vegetation segmentation** from LiDAR `.las` files.  
 
 It provides a clean R interface:
 
@@ -35,17 +35,17 @@ The Python side (in `src/`) handles:
 
 ## 1. Getting Started
 
-### 1.1 Installation of the vegseg package
+### 1.1 Installation of the FuelDeep3D package
 
 
 ```r
 install.packages(
-  "vegseg",
+  "FuelDeep3D",
   repos = c("https://venkatasivanaga.r-universe.dev",
             "https://cloud.r-project.org")
 )
 
-library(vegseg)
+library(FuelDeep3D)
 
 ```
 
@@ -84,7 +84,7 @@ install all Python dependencies from `requirements.txt`.
 # 1) Install and load reticulate (once)
 install.packages("reticulate")
 library(reticulate)
-library(vegseg)
+library(FuelDeep3D)
 
 # 2) (Optional) Attach a base Conda env so reticulate can find conda
 use_condaenv("base", required = FALSE)
@@ -96,7 +96,7 @@ conda_create(
 )
 
 # 4) Install all Python dependencies into that env
-vegseg_install_py_deps("pointnext")
+install_py_deps("pointnext")
 
 # 5) Activate this environment for the current R session
 use_condaenv("pointnext", required = TRUE)
@@ -111,30 +111,30 @@ py_config()
 ## 3. Predict on a new LAS using a pre-trained model
 
 ```r
-library(vegseg)
+library(FuelDeep3D)
 library(reticulate)
 use_condaenv("pointnext", required = TRUE)
 
-cfg <- vegseg_config(
+cfg <- config(
   las_path     = "data/trees2.las",  # any LAS you want to segment
   out_pred_dir = "data/output_predictions",
   model_path   = "data/model/best_model.pth"       # your pre-trained checkpoint
 )
 
-vegseg_predict(cfg, mode = "overwrite", setup_env = FALSE)
+predict(cfg, mode = "overwrite", setup_env = FALSE)
 # or keep original classification and add 'pred_label':
-# vegseg_predict(cfg, mode = "extra", setup_env = FALSE)
+# predict(cfg, mode = "extra", setup_env = FALSE)
 ```
 
 ## 4. Train a new model on your own labelled LAS data
 
 
 ```r
-library(vegseg)
+library(FuelDeep3D)
 library(reticulate)
 use_condaenv("pointnext", required = TRUE)
 
-cfg <- vegseg_config(
+cfg <- config(
   las_path     = "data/trees.las",
   out_dir      = "data/ds_hag4",
   out_pred_dir = "data/output_predictions",
@@ -146,8 +146,8 @@ cfg <- vegseg_config(
   cell_size = 0.25, quantile = 0.05
 )
 
-res <- vegseg_train(cfg, setup_env = FALSE)        # trains & saves best .pth
-vegseg_predict(cfg, mode = "overwrite", setup_env = FALSE)  # writes trees_predicted.las
+res <- train(cfg, setup_env = FALSE)        # trains & saves best .pth
+predict(cfg, mode = "overwrite", setup_env = FALSE)  # writes trees_predicted.las
 ```
 
 ## 5 Predicted results

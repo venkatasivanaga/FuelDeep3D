@@ -1,17 +1,17 @@
 #' Run prediction on cfg$las_path and write output LAS
-#' @param cfg list from vegseg_config()
+#' @param cfg list from config()
 #' @param mode "overwrite" or "extra"
 #' @param setup_env logical; FALSE if you already have Python env
 #' @return output LAS path (character)
 #' @export
-vegseg_predict <- function(cfg, mode = c("overwrite", "extra"), setup_env = FALSE) {
+predict <- function(cfg, mode = c("overwrite", "extra"), setup_env = FALSE) {
   mode <- match.arg(mode)
   stopifnot(is.list(cfg))
   
-  # --- locate and import Python modules from inst/python ---
-  py_dir <- system.file("python", package = "vegseg")
+  # --- locate and import Python modules from extdata/python ---
+  py_dir <- system.file("extdata", "python", package = "FuelDeep3D")
   if (py_dir == "" || !dir.exists(py_dir)) {
-    stop("Could not find inst/python directory in installed vegseg package.")
+    stop("Could not find extdata/python directory in installed FuelDeep3D package1111.")
   }
 
   py_model <- reticulate::import_from_path("model", path = py_dir, delay_load = FALSE)

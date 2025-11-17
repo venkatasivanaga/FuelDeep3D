@@ -3,6 +3,6 @@
 .RData
 .Ruserdata
 .DS_Store
-inst/python/__pycache__/
-inst/python/vegseg/__pycache__/
-inst/python/.venv/
+extdata/python/__pycache__/
+extdata/python/FuelDeep3D/__pycache__/
+extdata/python/.venv/

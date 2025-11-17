@@ -1,5 +1,5 @@
 .onLoad <- function(libname, pkgname) {
-  # Locate the installed inst/python directory
+  # Locate the installed extdata/python directory
   py_root <- system.file("python", package = pkgname)
   
   # If it doesn't exist, do nothing

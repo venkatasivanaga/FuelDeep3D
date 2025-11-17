@@ -1,7 +1,8 @@
-^inst/python/\.venv$
-^inst/python/requirements.txt$
+^extdata/python/\.venv$
+^extdata/python/requirements.txt$
 ^\.github$
 ^README\.Rmd$
-^data$
+^inst\$
+^dev\$
 ^.*\.Rproj$
 ^\.Rproj\.user$
