@@ -9,7 +9,7 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
-from utils import set_seeds, estimate_ground_z
+from utils import set_seeds, estimate_ground_z, read_las_any
 
 
 class NPZDataset(Dataset):
@@ -75,7 +75,7 @@ def build_dataset_from_las(
     for s in ["train", "val", "test"]:
         (OUT_DIR / s).mkdir(exist_ok=True)
 
-    las = laspy.read(LAS_PATH)
+    las = read_las_any(LAS_PATH)
     xyz = np.c_[las.x, las.y, las.z].astype(np.float32)
 
     if hasattr(las, "label"):

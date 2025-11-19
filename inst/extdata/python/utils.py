@@ -11,6 +11,37 @@ def set_seeds(seed: int):
         if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)
     except Exception:
         pass
+import os
+import laspy
+import numpy as np
+import torch
+# ... your other imports stay ...
+
+def read_las_any(path: str):
+    """
+    Read a .las or .laz file with laspy.
+
+    Parameters
+    ----------
+    path : str
+        Path to the LAS / LAZ file.
+
+    Returns
+    -------
+    laspy.LasData
+        Loaded point cloud.
+    """
+    path = str(path)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"[vegseg] LAS/LAZ file not found: {path}")
+
+    ext = os.path.splitext(path)[1].lower()
+    if ext not in (".las", ".laz"):
+        print(f"[vegseg] Warning: extension '{ext}' is not '.las' or '.laz'; "
+              f"trying to read anyway.")
+
+    print(f"[vegseg] Reading point cloud from {path} ...")
+    return laspy.read(path)
 
 def estimate_ground_z(xyz: np.ndarray, cell: float = 0.25, quantile: float = 0.05):
     """Grid the XY plane with cell size (m). Per cell, take z-quantile as ground."""

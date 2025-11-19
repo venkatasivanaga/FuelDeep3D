@@ -5,7 +5,7 @@ import laspy
 import torch
 import sklearn.neighbors as skn
 
-from utils import estimate_ground_z
+from utils import estimate_ground_z, read_las_any
 
 __all__ = ["infer_on_las_path", "write_predictions_to_las"]
 
@@ -36,7 +36,7 @@ def infer_on_las_path(
     QUANTILE        = float(QUANTILE)
 
     print(f"Reading LAS from {las_path} ...")
-    las = laspy.read(las_path)
+    las = read_las_any(LAS_PATH)
     xyz = np.c_[las.x, las.y, las.z].astype(np.float32)
     N   = xyz.shape[0]
 
@@ -93,19 +93,21 @@ def infer_on_las_path(
     print("Prediction complete.")
     return y_pred
 
+def write_predictions_to_las(in_las: str, out_dir: str, y_pred: np.ndarray, mode="overwrite"):
+    """Write predictions, preserving .las/.laz based on input file."""
+    in_path = Path(in_las)
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-def write_predictions_to_las(in_las: str, out_las: str, y_pred: np.ndarray, *, mode="overwrite"):
-    """Write predictions to LAS. mode='overwrite' or 'extra' (adds pred_label)."""
-    from laspy import ExtraBytesParams
+    suffix   = in_path.suffix              # ".las" or ".laz"
+    out_name = in_path.stem + "_predicted" + suffix
+    out_path = out_dir / out_name
 
-    in_las  = str(in_las)
-    out_las = str(out_las)
-
-    las = laspy.read(in_las)
-    assert y_pred.shape[0] == len(las.x), "Predictions length must match number of points."
+    las = laspy.read(in_path)
+    y_pred = np.clip(y_pred, 0, 255).astype(np.uint8)
 
     if mode == "overwrite":
-        las.classification = np.clip(y_pred, 0, 255).astype(np.uint8)
+        las.classification = y_pred
     elif mode == "extra":
         if "pred_label" not in las.point_format.dimension_names:
             las.add_extra_dim(ExtraBytesParams(name="pred_label", type=np.uint16))
@@ -113,6 +115,6 @@ def write_predictions_to_las(in_las: str, out_las: str, y_pred: np.ndarray, *, m
     else:
         raise ValueError("mode must be 'overwrite' or 'extra'")
 
-    Path(out_las).parent.mkdir(parents=True, exist_ok=True)
-    las.write(out_las)
-    print(f"Wrote predictions to: {out_las}")
+    las.write(out_path)
+    print(f">> Writing predictions to: {out_path} (mode={mode})")
+    return str(out_path)

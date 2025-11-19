@@ -11,7 +11,7 @@ predict <- function(cfg, mode = c("overwrite", "extra"), setup_env = FALSE) {
   # --- locate and import Python modules from extdata/python ---
   py_dir <- system.file("extdata", "python", package = "FuelDeep3D")
   if (py_dir == "" || !dir.exists(py_dir)) {
-    stop("Could not find extdata/python directory in installed FuelDeep3D package1111.")
+    stop("Could not find extdata/python directory in installed FuelDeep3D package.")
   }
 
   py_model <- reticulate::import_from_path("model", path = py_dir, delay_load = FALSE)
