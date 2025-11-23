@@ -2,7 +2,12 @@
   <img src="readme/logo_gif.gif" alt="Single tree segmentation output" width="100%">
 </p>
 
-
+[![FuelDeep3D status
+badge](https://venkatasivanaga.dev/badges/FuelDeep3D)](https://venkatasivanaga.r-universe.dev/FuelDeep3D)
+[![R-hub](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml/badge.svg)](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml)
+[![CRAN](https://www.r-pkg.org/badges/version/FuelDeep3D)](https://cran.r-project.org/package=FuelDeep3D)
+![licence](https://img.shields.io/badge/Licence-GPL--3-blue.svg)
+![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/FuelDeep3D)
 
 # FuelDeep3D: Tree Segmentation with LiDAR + PyTorch (R + Python)
 
