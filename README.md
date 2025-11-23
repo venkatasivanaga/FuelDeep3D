@@ -86,28 +86,20 @@ You can create the Python environment directly from R using **reticulate** and
 install all Python dependencies from `requirements.txt`.
 
 ```r
-# 1) Install and load reticulate (once)
+# 0) Install FuelDeep3D and reticulate if not already
+install.packages("FuelDeep3D")    # from r-universe or other repo
 install.packages("reticulate")
-library(reticulate)
+
 library(FuelDeep3D)
+library(reticulate)
 
-# 2) (Optional) Attach a base Conda env so reticulate can find conda
-use_condaenv("base", required = FALSE)
+# 1) Create or reuse the "pointnext" env and install deps if needed
+ensure_py_env("pointnext")   # creates env + installs deps the first time
+# ensure_py_env("pointnext", reinstall = TRUE)  # force reinstall if you want
 
-# 3) Create a new Conda environment called "pointnext" with Python 3.10
-conda_create(
-  envname  = "pointnext",
-  packages = "python=3.10"
-)
-
-# 4) Install all Python dependencies into that env
-install_py_deps("pointnext")
-
-# 5) Activate this environment for the current R session
-use_condaenv("pointnext", required = TRUE)
-
-# Sanity check: should show Python from the "pointnext" env
+# 2) Sanity check – should show Python from the "pointnext" env
 py_config()
+
 
 
 ```
