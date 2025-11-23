@@ -100,8 +100,6 @@ ensure_py_env("pointnext")   # creates env + installs deps the first time
 # 2) Sanity check – should show Python from the "pointnext" env
 py_config()
 
-
-
 ```
 
 
