@@ -1,45 +1,47 @@
+# ============================================================
+# FuelDeep3D: Conda + Python deps setup (CRAN-safe, opt-in)
+# ============================================================
+
+# Helper: detect R CMD check / CRAN check environments
+.is_r_cmd_check <- function() {
+  nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_")) ||
+    identical(Sys.getenv("NOT_CRAN"), "false") ||
+    identical(Sys.getenv("CI"), "true")
+}
+
 #' Ensure a Conda environment and Python dependencies for FuelDeep3D
 #'
 #' @description
-#' Ensures a Conda environment exists and installs the Python dependencies required
-#' by FuelDeep3D into that environment. The environment is then activated for the
-#' current R session using \code{reticulate}.
+#' Creates (if needed) and activates a Conda environment for FuelDeep3D, then
+#' installs the required Python dependencies into that environment using pip via
+#' \code{reticulate::conda_install(..., pip = TRUE)}.
 #'
 #' @details
-#' This helper performs the following steps:
-#' \enumerate{
-#'   \item Detects a Conda installation using \code{reticulate::conda_binary()}.
-#'   \item Creates the requested environment (if missing) using the requested Python version.
-#'   \item Installs Python packages via \code{\link{install_py_deps}}.
-#'   \item Activates the environment for the current R session with
-#'   \code{reticulate::use_condaenv(..., required = TRUE)}.
+#' This function is intentionally opt-in. It requires:
+#' \itemize{
+#'   \item An existing Conda installation (Miniconda/Anaconda), discoverable by reticulate.
+#'   \item Internet connection to install Python packages.
 #' }
 #'
-#' Use \code{cpu_only = TRUE} on machines without an NVIDIA GPU / CUDA drivers.
-#' If you change \code{cpu_only} after a previous install, use \code{reinstall = TRUE}
-#' to force reinstalling dependencies.
+#' For CRAN safety, this function will not run during \code{R CMD check}.
 #'
-#' @param envname Name of the Conda environment to use or create.
-#' @param python_version Python version used when creating a new environment.
-#'   Ignored if the environment already exists.
-#' @param reinstall Logical. If \code{TRUE}, forces dependency installation even if
-#'   key modules appear to be installed. Default: \code{FALSE}.
-#' @param cpu_only Logical. If \code{TRUE}, installs CPU-only PyTorch wheels.
-#'   If \code{FALSE} (default), installs CUDA wheels (cu121) via the PyTorch extra index URL.
-#'   CUDA wheels require a compatible NVIDIA GPU + drivers.
+#' @param envname Character. Name of the Conda environment to use/create.
+#' @param python_version Character. Python version used if a new env is created (e.g. "3.10").
+#' @param reinstall Logical. If TRUE, forces dependency installation even if key modules are present.
+#' @param cpu_only Logical. If TRUE, installs CPU-only PyTorch wheels. If FALSE, installs CUDA wheels (cu121).
+#' @param conda Path to conda binary. Default uses \code{reticulate::conda_binary()}.
 #'
-#' @return Invisibly returns \code{TRUE} when the environment exists and has been
-#'   activated for the current R session.
+#' @return Invisibly TRUE if environment was ensured + activated, FALSE if skipped during check.
 #'
 #' @examples
 #' \dontrun{
-#' # Requires Conda and an internet connection
-#' ensure_py_env(envname = "pointnext", python_version = "3.10", cpu_only = FALSE)
-#'
-#' # CPU-only install (recommended on most laptops / no NVIDIA GPU)
+#' # Requires Conda + internet
 #' ensure_py_env(envname = "pointnext", python_version = "3.10", cpu_only = TRUE)
 #'
-#' # Confirm which Python reticulate is using:
+#' # CUDA wheels (requires compatible NVIDIA drivers)
+#' ensure_py_env(envname = "pointnext", python_version = "3.10", cpu_only = FALSE)
+#'
+#' # Inspect reticulate Python
 #' reticulate::py_config()
 #' }
 #'
@@ -47,108 +49,138 @@
 ensure_py_env <- function(envname = "pointnext",
                           python_version = "3.10",
                           reinstall = FALSE,
-                          cpu_only = FALSE) {
-  if (!requireNamespace("reticulate", quietly = TRUE)) {
-    stop("The 'reticulate' package is required. Please install it first.", call. = FALSE)
+                          cpu_only = TRUE,
+                          conda = NULL) {
+  if (.is_r_cmd_check()) {
+    message("Skipping ensure_py_env() during R CMD check.")
+    return(invisible(FALSE))
   }
   
-  conda_bin <- reticulate::conda_binary()
+  if (!requireNamespace("reticulate", quietly = TRUE)) {
+    stop("Package 'reticulate' is required. Install it with install.packages('reticulate').",
+         call. = FALSE)
+  }
+  
+  # Find conda
+  conda_bin <- conda
+  if (is.null(conda_bin) || !nzchar(conda_bin)) {
+    conda_bin <- reticulate::conda_binary()
+  }
   if (is.null(conda_bin) || !nzchar(conda_bin)) {
     stop(
-      "No Conda installation detected. Please install Anaconda or Miniconda and restart R.",
+      "No Conda installation detected by reticulate.\n",
+      "Install Miniconda/Anaconda, restart R, then try again.\n",
+      "Tip: reticulate can install Miniconda via reticulate::install_miniconda().",
       call. = FALSE
     )
   }
   
-  envs <- tryCatch(reticulate::conda_list(), error = function(e) NULL)
+  # List envs
+  envs <- tryCatch(reticulate::conda_list(conda = conda_bin),
+                   error = function(e) NULL)
   env_exists <- !is.null(envs) && envname %in% envs$name
   
   if (!env_exists) {
-    message(">> Conda env '", envname, "' not found; creating it with Python ", python_version, " ...")
-    reticulate::conda_create(envname = envname, packages = paste0("python=", python_version))
+    message(">> Conda env '", envname, "' not found; creating with Python ", python_version, " ...")
+    reticulate::conda_create(
+      envname = envname,
+      packages = paste0("python=", python_version),
+      conda = conda_bin
+    )
     message(">> Created Conda env '", envname, "'.")
   } else {
     message(">> Reusing existing Conda env '", envname, "'.")
   }
   
-  install_py_deps(envname = envname, only_if_missing = !reinstall, cpu_only = cpu_only)
+  # Install deps
+  install_py_deps(envname = envname, only_if_missing = !reinstall, cpu_only = cpu_only, conda = conda_bin)
   
-  reticulate::use_condaenv(envname, required = TRUE)
+  # Activate env for this session
+  reticulate::use_condaenv(envname, conda = conda_bin, required = TRUE)
   message(">> Activated Conda env '", envname, "' for this R session.")
-  
   invisible(TRUE)
 }
 
-#' Install Python dependencies into a Conda environment
+#' Install Python dependencies into a Conda environment (FuelDeep3D)
 #'
 #' @description
-#' Installs the Python packages required by FuelDeep3D into an existing Conda
-#' environment using pip via \code{reticulate::conda_install(..., pip = TRUE)}.
+#' Installs required Python packages into an existing Conda environment using pip.
 #'
 #' @details
-#' When \code{only_if_missing = TRUE} (default), the function checks whether key
-#' modules are importable (\code{torch}, \code{numpy}, \code{sklearn}, \code{laspy}, \code{tqdm}).
-#' If all are available, installation is skipped and the function returns \code{FALSE}.
+#' If \code{only_if_missing = TRUE}, checks for key importable modules and skips
+#' installation when they already exist.
 #'
-#' Use \code{cpu_only = TRUE} to install CPU-only PyTorch wheels. Use
-#' \code{cpu_only = FALSE} to install CUDA 12.1 wheels (cu121), which requires a
-#' compatible NVIDIA GPU and drivers.
+#' @param envname Character. Name of the Conda environment.
+#' @param only_if_missing Logical. Skip install if key modules are already present.
+#' @param cpu_only Logical. If TRUE, installs CPU-only PyTorch; otherwise installs cu121 wheels.
+#' @param conda Path to conda binary. Default uses \code{reticulate::conda_binary()}.
 #'
-#' @param envname Name of the Conda environment. The environment must already exist.
-#' @param only_if_missing Logical. If \code{TRUE}, skips installation when all key
-#'   modules appear to be installed. If \code{FALSE}, forces installation/update.
-#' @param cpu_only Logical. If \code{TRUE}, installs CPU-only PyTorch wheels.
-#'   If \code{FALSE} (default), installs CUDA wheels (cu121).
+#' @return Invisibly TRUE if installation ran, FALSE if skipped.
 #'
-#' @return Invisibly returns \code{TRUE} if installation was executed, or
-#'   \code{FALSE} if installation was skipped because required modules were already present.
+#' @examples
+#' \dontrun{
+#' install_py_deps(envname = "pointnext", cpu_only = TRUE)
+#' }
 #'
 #' @export
 install_py_deps <- function(envname = "pointnext",
                             only_if_missing = TRUE,
-                            cpu_only = FALSE) {
-  if (!requireNamespace("reticulate", quietly = TRUE)) {
-    stop("The 'reticulate' package is required. Please install it first.", call. = FALSE)
+                            cpu_only = TRUE,
+                            conda = NULL) {
+  if (.is_r_cmd_check()) {
+    message("Skipping install_py_deps() during R CMD check.")
+    return(invisible(FALSE))
   }
   
-  # Confirm env exists (helps if user calls install_py_deps() directly)
-  envs <- tryCatch(reticulate::conda_list(), error = function(e) NULL)
-  if (is.null(envs) || !(envname %in% envs$name)) {
-    stop("Conda env '", envname, "' not found. Create it first (e.g., with ensure_py_env()).",
+  if (!requireNamespace("reticulate", quietly = TRUE)) {
+    stop("Package 'reticulate' is required. Install it with install.packages('reticulate').",
          call. = FALSE)
   }
   
-  if (only_if_missing) {
+  conda_bin <- conda
+  if (is.null(conda_bin) || !nzchar(conda_bin)) {
+    conda_bin <- reticulate::conda_binary()
+  }
+  if (is.null(conda_bin) || !nzchar(conda_bin)) {
+    stop("No Conda installation detected by reticulate.", call. = FALSE)
+  }
+  
+  envs <- tryCatch(reticulate::conda_list(conda = conda_bin),
+                   error = function(e) NULL)
+  if (is.null(envs) || !(envname %in% envs$name)) {
+    stop("Conda env '", envname, "' not found. Create it first with ensure_py_env().",
+         call. = FALSE)
+  }
+  
+  # Activate env so py_module_available checks the right python
+  reticulate::use_condaenv(envname, conda = conda_bin, required = TRUE)
+  
+  if (isTRUE(only_if_missing)) {
     message(">> Checking key Python modules in env '", envname, "' ...")
-    reticulate::use_condaenv(envname, required = TRUE)
-    
     key_modules <- c("torch", "numpy", "sklearn", "laspy", "tqdm")
     missing <- key_modules[
-      !vapply(key_modules, function(mod) reticulate::py_module_available(mod), logical(1))
+      !vapply(key_modules, reticulate::py_module_available, logical(1))
     ]
     
     if (length(missing) == 0) {
-      message(">> All key modules already installed in '", envname, "'. Skipping Python deps install.")
+      message(">> Key modules already present in '", envname, "'. Skipping install.")
       return(invisible(FALSE))
-    } else {
-      message(">> Missing modules detected in '", envname, "': ",
-              paste(missing, collapse = ", "),
-              ". Installing full dependency set ...")
     }
+    
+    message(">> Missing modules: ", paste(missing, collapse = ", "), " -> installing full set ...")
   } else {
-    message(">> Installing (or updating) Python deps in env '", envname, "' ...")
-    reticulate::use_condaenv(envname, required = TRUE)
+    message(">> Installing/updating Python deps in env '", envname, "' ...")
   }
   
-  # ---- PyTorch: CPU vs CUDA ----
-  if (isTRUE(cpu_only)) {
-    torch_args <- c(
-      "torch==2.5.1",
-      "torchvision==0.20.1",
-      "torchaudio==2.5.1"
-    )
+  # IMPORTANT:
+  # - Some CSS color names like "lime" are not valid in base R.
+  # - But that's unrelated here; just noting.
+  #
+  # Torch wheels:
+  torch_args <- if (isTRUE(cpu_only)) {
+    c("torch==2.5.1", "torchvision==0.20.1", "torchaudio==2.5.1")
   } else {
-    torch_args <- c(
+    c(
       "--extra-index-url", "https://download.pytorch.org/whl/cu121",
       "torch==2.5.1+cu121",
       "torchvision==0.20.1+cu121",
@@ -168,10 +200,15 @@ install_py_deps <- function(envname = "pointnext",
     "seaborn~=0.13"
   )
   
-  message(">> Installing Python deps into Conda env '", envname, "' using pip via reticulate::conda_install() ...")
-  message(">> Mode: ", if (cpu_only) "CPU-only PyTorch wheels" else "CUDA cu121 PyTorch wheels (requires compatible NVIDIA setup)")
+  message(">> Installing Python deps into '", envname, "' using pip via reticulate::conda_install()")
+  message(">> Mode: ", if (cpu_only) "CPU-only torch" else "CUDA cu121 torch (requires compatible NVIDIA drivers)")
   
-  reticulate::conda_install(envname = envname, packages = pip_args, pip = TRUE)
+  reticulate::conda_install(
+    envname = envname,
+    packages = pip_args,
+    pip = TRUE,
+    conda = conda_bin
+  )
   
   message(">> Finished installing Python deps into '", envname, "'.")
   invisible(TRUE)

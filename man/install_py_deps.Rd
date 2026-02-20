@@ -2,37 +2,37 @@
 % Please edit documentation in R/py_deps.R
 \name{install_py_deps}
 \alias{install_py_deps}
-\title{Install Python dependencies into a Conda environment}
+\title{Install Python dependencies into a Conda environment (FuelDeep3D)}
 \usage{
 install_py_deps(
   envname = "pointnext",
   only_if_missing = TRUE,
-  cpu_only = FALSE
+  cpu_only = TRUE,
+  conda = NULL
 )
 }
 \arguments{
-\item{envname}{Name of the Conda environment. The environment must already exist.}
+\item{envname}{Character. Name of the Conda environment.}
 
-\item{only_if_missing}{Logical. If \code{TRUE}, skips installation when all key
-modules appear to be installed. If \code{FALSE}, forces installation/update.}
+\item{only_if_missing}{Logical. Skip install if key modules are already present.}
 
-\item{cpu_only}{Logical. If \code{TRUE}, installs CPU-only PyTorch wheels.
-If \code{FALSE} (default), installs CUDA wheels (cu121).}
+\item{cpu_only}{Logical. If TRUE, installs CPU-only PyTorch; otherwise installs cu121 wheels.}
+
+\item{conda}{Path to conda binary. Default uses \code{reticulate::conda_binary()}.}
 }
 \value{
-Invisibly returns \code{TRUE} if installation was executed, or
-\code{FALSE} if installation was skipped because required modules were already present.
+Invisibly TRUE if installation ran, FALSE if skipped.
 }
 \description{
-Installs the Python packages required by FuelDeep3D into an existing Conda
-environment using pip via \code{reticulate::conda_install(..., pip = TRUE)}.
+Installs required Python packages into an existing Conda environment using pip.
 }
 \details{
-When \code{only_if_missing = TRUE} (default), the function checks whether key
-modules are importable (\code{torch}, \code{numpy}, \code{sklearn}, \code{laspy}, \code{tqdm}).
-If all are available, installation is skipped and the function returns \code{FALSE}.
+If \code{only_if_missing = TRUE}, checks for key importable modules and skips
+installation when they already exist.
+}
+\examples{
+\dontrun{
+install_py_deps(envname = "pointnext", cpu_only = TRUE)
+}
 
-Use \code{cpu_only = TRUE} to install CPU-only PyTorch wheels. Use
-\code{cpu_only = FALSE} to install CUDA 12.1 wheels (cu121), which requires a
-compatible NVIDIA GPU and drivers.
 }

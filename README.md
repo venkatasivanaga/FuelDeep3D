@@ -15,7 +15,7 @@
 
 # FuelDeep3D: An R package for Fire Fuels Segmentation in 3D Using Terrestrial Laser Scanning and Deep Learning  
 
-**Authors:** Venkata Siva Reddy Naga and Carlos Alberto Silva.
+**Authors:** Venkata Siva Reddy Naga, Alexander John Gaskins, and Carlos Alberto Silva.
 
 
 `FuelDeep3D` provides tools for processing, feature extraction, and classification of 3D forest point clouds for fuel assessment applications. 
@@ -73,7 +73,7 @@ OR
 2. Run the installer:
    - Accept the license.
    - Choose **“Just Me”** (recommended) unless you know you need “All Users”.
-   - Keep the default install location (e.g. `C:\Users\<you>\anaconda3`).
+   - Keep the default install location (e.g., `C:\Users\<you>\anaconda3`).
    - *Optional but convenient:* check **“Add Anaconda to my PATH”** if you want
      to use `conda` from a normal Command Prompt.
 3. Click **Next - Install** and wait for the installation to finish.
@@ -84,8 +84,7 @@ OR
 
 ### 1.1.2 Create the `pointnext` Conda environment 
 
-You can create the Python environment directly from R using **reticulate** and
-install all Python dependencies.
+You can create the Python environment directly from R using **reticulate** and install all Python dependencies.
 
 ```r
 # 0) Install FuelDeep3D and reticulate if not already
@@ -118,8 +117,8 @@ This section provides simple commands to visualize `.las` / `.laz` files during 
 
 ### 2.1 Visualize LiDAR data by Height (Z)
 
-This visualization shows the unclassified LiDAR point cloud, where points are colored solely based on their height (Z value).
-This height-based coloring helps reveal canopy layers, trunk structure, and ground elevation differences.
+This visualization shows the unclassified LiDAR point cloudwith points colored by height (Z value).
+This height-based coloring helps reveal canopy layers, trunk structure, and differences in ground elevation.
 
 ```r
 library(lidR)
@@ -274,7 +273,7 @@ predicted_plot3d(
 )
 ```
 
-#### Downsampling (optional for large point clouds): The default setting plots every point (downsample = "none"). If you’re working with a large point cloud, choose a downsampling mode to speed up plotting and keep the visualization responsive.
+#### Downsampling (optional for large point clouds): The default setting plots every point (downsample = "none"). For large point clouds, use downsampling to speed up plotting and maintain responsiveness.
 
 ```r
 predicted_plot3d(
@@ -289,7 +288,7 @@ predicted_plot3d(
 ### Important note about color names
 
 Base R does not recognize some CSS color names (for example, `lime`).  
-To avoid errors, prefer **hex codes** (recommended) or use a **valid base R color name**.
+To avoid errors, **hex codes** are recommended, though **valid base R color names** also work.
 
 ```r
 # ✅ hex is safest
@@ -390,7 +389,7 @@ predict(cfg, mode = "overwrite", setup_env = FALSE)  # writes trees_predicted.la
 
 ## 5. Evaluation of Predicted LAS Files
 
-you can compute accuracy, confusion matrix, precision, recall, and F1 directly.
+You can compute accuracy, confusion matrix, precision, recall, and F1 directly.
 
 FuelDeep3D includes evaluation utilities to measure segmentation quality using LAS/LAZ files. These tools compute:
 
@@ -434,7 +433,7 @@ FuelDeep3D includes evaluation utilities to measure segmentation quality using L
 
   ### 5.1.2 Evaluate Performance on Two LAS Files
 
-  Use this when ground truth labels and predicted classes are saved in two separate LAS/LAZ files.
+  Use this when ground truth labels and predicted classes are in separate LAS/LAZ files.
   Both files must be point-wise aligned (same points in the same order, same number of points).
   The function compares truth_col vs pred_col and returns accuracy, confusion matrix, and per-class precision/recall/F1.
 
@@ -493,7 +492,7 @@ FuelDeep3D includes evaluation utilities to measure segmentation quality using L
 
   ---
 
-  ### 5.3 Print Precision, Recall, F1 and Accuracy in a Table
+  ### 5.3 Print Precision, Recall, F1, and Accuracy in a Table
 
   ```r
   print_metrics_table(results)
@@ -512,7 +511,7 @@ FuelDeep3D includes evaluation utilities to measure segmentation quality using L
 
   ```
 
-  Where the **Overall** row reports macro-averaged precision, recall, and F1 across all classes.
+  The **Overall** row shows macro-averaged precision, recall, and F1 across all classes.
 
   ---
 
@@ -522,8 +521,8 @@ FuelDeep3D includes evaluation utilities to measure segmentation quality using L
   These plots help quickly identify which classes are most frequently confused and whether errors are concentrated in specific rows/columns.
 
   - `row_normalize = FALSE` shows **raw counts** (best when you want to see absolute error volume and class frequency).  
-  - `row_normalize = TRUE` shows **row-normalized proportions** (best for imbalanced datasets; each true-label row sums to 1 so you can compare class-wise performance fairly).  
-
+  - `row_normalize = TRUE` shows **row-normalized proportions** (best for imbalanced datasets; each true-label row sums to 1, so you can compare class-wise performance fairly).
+  
   ```r
 cm <- table(True = las@data$label, Pred = las@data$Classification)
 
@@ -587,13 +586,13 @@ plot_confusion_matrix(
 
   ---
 
-  These tools make it simple to evaluate segmentation performance directly from a LAS file without requiring external scripts or reformatting.
-
+  These tools simplify evaluating segmentation performance directly from LAS files without external scripts or reformatting.
+  
 ---
 
 # Acknowledgements
 
-FuelDeep3D was supported by the following projects and programs:
+FuelDeep3D was supported by:
 
 - **ESTCP – FuelsCraft:** An innovative wildland fuel mapping tool for prescribed fire decision support on Department of Defense military installations (**#RC23-7779**)
 - **EMS4D:** MultiScale Fuel Mapping and Decision Support System for the Next Generation of Fire Management (**#22-2-02-15**)
@@ -608,7 +607,7 @@ Please report any issue regarding the FuelDeep3D package to Venkata Siva Reddy N
 # Disclaimer
 
 **FuelDeep3D package comes with no guarantee, expressed or implied, and
-the authors hold no responsibility for its use or reliability of its
+the authors hold no responsibility for its use or the reliability of its
 outputs.**
 
 
