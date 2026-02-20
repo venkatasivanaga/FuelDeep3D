@@ -525,12 +525,17 @@ FuelDeep3D includes evaluation utilities to measure segmentation quality using L
   - `row_normalize = TRUE` shows **row-normalized proportions** (best for imbalanced datasets; each true-label row sums to 1 so you can compare class-wise performance fairly).  
 
   ```r
-  # Counts heatmap (absolute number of points per cell)
-  plot_confusion_matrix(
-    results$confusion_matrix,
-    title = "Confusion Matrix (Counts)",
-    row_normalize = FALSE
-  )
+cm <- table(True = las@data$label, Pred = las@data$Classification)
+
+plot_confusion_matrix(
+    cm,
+    row_normalize = FALSE,
+    las_name = "trees.laz",
+    title = "Confusion Matrix (Row-normalized)",
+    class_names = c("0" = "Ground", "1" = "Leaves", "2" = "Branch"),
+    palette_type = "viridis",
+    palette_name = "cividis"
+)
   ```
 
 <p align="center">
@@ -540,11 +545,17 @@ FuelDeep3D includes evaluation utilities to measure segmentation quality using L
    Row-normalized heatmap (proportion per true class; easier to compare classes)
 
   ```r
-  plot_confusion_matrix(
-    results$confusion_matrix,
-    title = "Confusion Matrix (Row-Normalized)",
-    row_normalize = TRUE
-  )
+cm <- table(True = las@data$label, Pred = las@data$Classification)
+
+plot_confusion_matrix(
+    cm,
+    row_normalize = TRUE,
+    las_name = "trees.laz",
+    title = "Confusion Matrix (Row-normalized)",
+    class_names = c("0" = "Ground", "1" = "Leaves", "2" = "Branch"),
+    palette_type = "viridis",
+    palette_name = "cividis"
+)
   ```
 <p align="center">
   <img src="inst/readme/confusion_matrix_row_norm.png" alt="Confusion Matrix" width="45%">
