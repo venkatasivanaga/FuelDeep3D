@@ -95,8 +95,9 @@ library(FuelDeep3D)
 library(reticulate)
 
 # 1) Create or reuse the "pointnext" env and install deps if needed
-ensure_py_env("pointnext")   # creates env + installs deps the first time
-# ensure_py_env("pointnext", reinstall = TRUE)  # force reinstall if you want
+ensure_py_env(envname = "pointnext", reinstall = TRUE, cpu_only = FALSE)   # creates env + installs deps the first time
+# Use "reinstall = TRUE" to force-reinstall.
+# ensure_py_env(envname = "pointnext", reinstall = TRUE, cpu_only = TRUE) # Installs only cpu dependencies
 
 # 2) Sanity check – should show Python from the "pointnext" env
 py_config()
