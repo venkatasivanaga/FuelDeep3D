@@ -18,7 +18,7 @@ predict(
 model predictions; \code{"extra"} keeps original classification and adds a new attribute
 for predictions (behavior depends on the Python writer).}
 
-\item{setup_env}{Logical. If \code{TRUE}, calls \code{\link[=py_setup]{py_setup()}} (or your env setup helper)
+\item{setup_env}{Logical. If \code{TRUE}, calls \code{\link[=ensure_py_env]{ensure_py_env()}} (or your env setup helper)
 before importing Python modules. Default: \code{FALSE}.}
 
 \item{csf_args}{List of arguments passed to \code{\link[=add_ground_csf]{add_ground_csf()}} when \code{cfg$num_classes == 4}.}
@@ -52,7 +52,7 @@ points and assign them to class \code{3}, producing a final 4-class LAS/LAZ.
 }
 
 Note: \code{setup_env} is accepted for API compatibility; if you want it to actually run the
-environment setup, add a call such as \code{if (isTRUE(setup_env)) py_setup()} before importing.
+environment setup, add a call such as \code{if (isTRUE(setup_env)) ensure_py_env()} before importing.
 }
 \examples{
 \dontrun{

@@ -24,7 +24,7 @@
 #'
 #' \strong{Environment:} This function requires a working Python environment with the required
 #' dependencies installed (e.g., PyTorch). If \code{setup_env = TRUE}, it calls
-#' \code{\link{py_setup}} before importing Python modules.
+#' \code{\link{ensure_py_env}} before importing Python modules.
 #'
 #' \strong{Safety during checks:} \code{train()} is intentionally disabled during
 #' \code{R CMD check} to avoid running long, non-deterministic computations on CRAN.
@@ -34,7 +34,7 @@
 #' \code{cfg$out_dir} are deleted after training completes.
 #' 
 #' @param cfg A list created by [config()].
-#' @param setup_env Logical; if `TRUE`, calls [py_setup()] to create/use a venv.
+#' @param setup_env Logical; if `TRUE`, calls [ensure_py_env()] to create/use a venv.
 #'
 #' @return A list with training outputs (e.g., best metrics and checkpoint path),
 #'   returned from the Python trainer.
@@ -72,7 +72,7 @@ train <- function(cfg, setup_env = FALSE) {
   }
 
   if (isTRUE(setup_env)) {
-    py_setup()
+    ensure_py_env(envname = "pointnext", python_version = "3.10", cpu_only = TRUE)
   }
 
   # locate inst/extdata/python

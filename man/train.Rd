@@ -9,7 +9,7 @@ train(cfg, setup_env = FALSE)
 \arguments{
 \item{cfg}{A list created by \code{\link[=config]{config()}}.}
 
-\item{setup_env}{Logical; if \code{TRUE}, calls \code{\link[=py_setup]{py_setup()}} to create/use a venv.}
+\item{setup_env}{Logical; if \code{TRUE}, calls \code{\link[=ensure_py_env]{ensure_py_env()}} to create/use a venv.}
 }
 \value{
 A list with training outputs (e.g., best metrics and checkpoint path),
@@ -39,7 +39,7 @@ is converted back to R with \code{reticulate::py_to_r()}.
 
 \strong{Environment:} This function requires a working Python environment with the required
 dependencies installed (e.g., PyTorch). If \code{setup_env = TRUE}, it calls
-\code{\link{py_setup}} before importing Python modules.
+\code{\link{ensure_py_env}} before importing Python modules.
 
 \strong{Safety during checks:} \code{train()} is intentionally disabled during
 \code{R CMD check} to avoid running long, non-deterministic computations on CRAN.

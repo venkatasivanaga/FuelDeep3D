@@ -26,13 +26,13 @@
 #' }
 #'
 #' Note: \code{setup_env} is accepted for API compatibility; if you want it to actually run the
-#' environment setup, add a call such as \code{if (isTRUE(setup_env)) py_setup()} before importing.
+#' environment setup, add a call such as \code{if (isTRUE(setup_env)) ensure_py_env()} before importing.
 #' 
 #' @param cfg A configuration list created by [config()].
 #' @param mode Character. `"overwrite"` replaces the LAS `Classification` values with
 #'   model predictions; `"extra"` keeps original classification and adds a new attribute
 #'   for predictions (behavior depends on the Python writer).
-#' @param setup_env Logical. If `TRUE`, calls [py_setup()] (or your env setup helper)
+#' @param setup_env Logical. If `TRUE`, calls [ensure_py_env()] (or your env setup helper)
 #'   before importing Python modules. Default: `FALSE`.
 #' @param csf_args List of arguments passed to [add_ground_csf()] when `cfg$num_classes == 4`.
 #'
