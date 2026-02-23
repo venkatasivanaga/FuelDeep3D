@@ -39,7 +39,10 @@
 #' @return A character string giving the path to the output LAS/LAZ file.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' if (requireNamespace("reticulate", quietly = TRUE) && 
+#'     reticulate::py_module_available("torch")) {
+#'     
 #' library(FuelDeep3D)
 #' library(reticulate)
 #' use_condaenv("pointnext", required = TRUE)
@@ -56,6 +59,7 @@
 #'
 #' out_las <- predict(cfg, mode = "overwrite", setup_env = FALSE)
 #' out_las
+#' }
 #' }
 #' @export
 predict <- function(cfg, mode = c("overwrite", "extra"), setup_env = FALSE,

@@ -1,12 +1,12 @@
 Package: FuelDeep3D
 Type: Package
 Title: 3D Fuel Segmentation Using Terrestrial Laser Scanning and Deep Learning
-Version: 0.1.0
+Version: 0.1.1
 Authors@R:
     c(
       person("Venkata Siva Reddy", "Naga",
              role = c("aut", "cre"),
-             email = "vs.naga@ufl.edu"),
+             email = "venkatasivareddy003@gmail.com"),
       person("Alexander John", "Gaskins",
               role = "aut",  
               email = "alexandergaskins@ufl.edu"),
@@ -20,7 +20,10 @@ Description: Provides tools for preprocessing, feature extraction, and segmentat
     point clouds, generating training datasets, applying trained models to new point
     clouds, and producing per-point fuel classes such as stems, branches, foliage,
     and surface fuels. These tools support workflows for forest structure analysis,
-    wildfire behavior modeling, and fuel complexity assessment.
+    wildfire behavior modeling, and fuel complexity assessment. Deep learning 
+    segmentation relies on the PointNeXt architecture described by Qian et al. 
+    (2022) <doi:10.48550/arXiv.2206.04670>, while ground classification utilizes 
+    the Cloth Simulation Filter algorithm by Zhang et al. (2016) <doi:10.3390/rs8060501>.
 Depends:
     R (>= 4.1)
 Imports:

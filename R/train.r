@@ -40,7 +40,10 @@
 #'   returned from the Python trainer.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' if (requireNamespace("reticulate", quietly = TRUE) && 
+#'     reticulate::py_module_available("torch")) {
+#'     
 #' library(FuelDeep3D)
 #' library(reticulate)
 #' use_condaenv("pointnext", required = TRUE)
@@ -60,6 +63,7 @@
 #' 
 #' res <- train(cfg, setup_env = FALSE)        # trains & saves best .pth
 #' 
+#' }
 #' }
 #' @export
 train <- function(cfg, setup_env = FALSE) {

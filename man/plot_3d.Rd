@@ -105,10 +105,11 @@ an optional compact legend, and optional "thickness by height" (points become la
 }
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE) && interactive()) {
+    # Your plot code here
 library(lidR)
 
-las <- readLAS("path/to/your_file.laz")
+las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 
 # 1) Default plot (black bg, legend on, thickness by height)
 plot_3d(las)

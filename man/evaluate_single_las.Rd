@@ -56,9 +56,10 @@ To keep the confusion matrix shape stable across files (even when some classes
 are missing), pass \code{classes = 0:2} or \code{classes = 0:3}.
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE)){
+
 library(lidR)
-las <- readLAS("your_file.laz")
+las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 
 res <- evaluate_single_las(
   las,

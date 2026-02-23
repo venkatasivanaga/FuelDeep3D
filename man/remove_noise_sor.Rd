@@ -37,15 +37,20 @@ This function preserves the original point order by computing a global keep
 mask and subsetting once.
 }
 \examples{
-\donttest{
-library(lidR)
-las <- readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
-if (!lidR::is.empty(las)) {
-  las_small <- las[seq_len(min(20000, lidR::npoints(las)))]
-  las_clean <- remove_noise_sor(las_small, height_thresh = 1, k = 10, zscore = 2.5)
-  lidR::npoints(las_small)
-  lidR::npoints(las_clean)
-}
+# Check for both lidR and dbscan before running
+if (requireNamespace("lidR", quietly = TRUE) && 
+    requireNamespace("dbscan", quietly = TRUE)) {
+  
+  las <- lidR::readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
+  
+  if (!lidR::is.empty(las)) {
+    las_small <- las[seq_len(min(20000, lidR::npoints(las)))]
+    las_clean <- remove_noise_sor(las_small, height_thresh = 1, k = 10, zscore = 2.5)
+    
+    # Optional: Print to console to show it worked
+    print(lidR::npoints(las_small))
+    print(lidR::npoints(las_clean))
+  }
 }
 
 }

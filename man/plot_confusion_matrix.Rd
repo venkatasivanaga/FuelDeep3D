@@ -91,11 +91,13 @@ Creates a heatmap visualization of a confusion matrix. If \code{row_normalize = 
 each row is converted to proportions so rows sum to 1.
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE) && 
+    requireNamespace("ggplot2", quietly = TRUE)){
+    
 library(lidR)
 
 # Read LAS/LAZ
-las <- readLAS("C:/path/to/your_file.laz")
+las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 
 # Confusion matrix: True labels vs Predicted class (LAS Classification)
 cm <- table(True = las@data$label, Pred = las@data$Classification)

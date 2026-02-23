@@ -51,9 +51,9 @@ This is useful after prediction to quickly inspect class balance and verify
 that classes look reasonable (e.g., not all points predicted as one class).
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE)){
 library(lidR)
-las <- readLAS("your_file.laz")
+las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 
 # 1) Predicted distribution (common case)
 las_class_distribution(las, field = "Classification")

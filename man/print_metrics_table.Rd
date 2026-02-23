@@ -9,7 +9,7 @@ print_metrics_table(
   digits = 4,
   include_macro = TRUE,
   include_weighted = TRUE,
-  include_overall = FALSE
+  include_overall_accuracy = FALSE
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ print_metrics_table(
 
 \item{include_weighted}{Logical. If TRUE, include a "Weighted avg" row.}
 
-\item{include_overall}{Logical. If TRUE, include an "Overall accuracy" row.}
+\item{include_overall_accuracy}{Logical. If TRUE, include an "Overall accuracy" row.}
 }
 \value{
 Invisibly returns a \code{data.frame} with per-class metrics and optional summary rows.
@@ -44,9 +44,9 @@ it often duplicates the weighted recall/accuracy in multi-class settings.
 }
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE)){
 library(lidR)
-las <- readLAS("C:/path/to/your_file.laz")
+las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 
 res <- evaluate_single_las(
   las,
@@ -56,11 +56,7 @@ res <- evaluate_single_las(
   class_names = c("0"="Ground","1"="Branch","2"="Leaves")
 )
 
-# print without overall accuracy row (recommended)
-# print_metrics_table(res, include_overall = FALSE)
-
-# If you want overall accuracy too:
-print_metrics_table(res, include_overall = TRUE)
+print_metrics_table(res, include_overall_accuracy = TRUE)
 }
 
 }

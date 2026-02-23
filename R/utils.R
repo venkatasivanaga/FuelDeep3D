@@ -167,9 +167,10 @@ metrics_from_cm <- function(cm) {
 #' @return A list containing the confusion matrix and metrics.
 #'
 #' @examples
-#' \dontrun{
+#' if (requireNamespace("lidR", quietly = TRUE)){
+#' 
 #' library(lidR)
-#' las <- readLAS("your_file.laz")
+#' las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 #'
 #' res <- evaluate_single_las(
 #'   las,
@@ -275,10 +276,11 @@ evaluate_single_las <- function(las,
 #' @return A list containing the confusion matrix and metrics.
 #'
 #' @examples
-#' \dontrun{
+#' if (requireNamespace("lidR", quietly = TRUE)){
+#' 
 #' library(lidR)
-#' truth <- readLAS("truth.laz")
-#' pred  <- readLAS("predicted.laz")
+#' truth <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
+#' pred  <- readLAS(system.file("extdata", "las", "tree21.laz", package = "FuelDeep3D"))
 #'
 #' res <- evaluate_two_las(
 #'   truth, pred,
@@ -436,10 +438,11 @@ evaluate_two_las <- function(truth_las,
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' if (requireNamespace("lidR", quietly = TRUE) && interactive()) {
+#'     # Your plot code here
 #' library(lidR)
 #'
-#' las <- readLAS("path/to/your_file.laz")
+#' las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 #'
 #' # 1) Default plot (black bg, legend on, thickness by height)
 #' plot_3d(las)
@@ -738,15 +741,15 @@ plot_3d <- function(las,
 #' @param digits Integer. Number of decimal places to round numeric metrics.
 #' @param include_macro Logical. If TRUE, include a "Macro avg" row.
 #' @param include_weighted Logical. If TRUE, include a "Weighted avg" row.
-#' @param include_overall Logical. If TRUE, include an "Overall accuracy" row.
+#' @param include_overall_accuracy Logical. If TRUE, include an "Overall accuracy" row.
 #'
 #' @return
 #' Invisibly returns a \code{data.frame} with per-class metrics and optional summary rows.
 #'
 #' @examples
-#' \dontrun{
+#' if (requireNamespace("lidR", quietly = TRUE)){
 #' library(lidR)
-#' las <- readLAS("C:/path/to/your_file.laz")
+#' las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 #'
 #' res <- evaluate_single_las(
 #'   las,
@@ -756,11 +759,7 @@ plot_3d <- function(las,
 #'   class_names = c("0"="Ground","1"="Branch","2"="Leaves")
 #' )
 #'
-#' # print without overall accuracy row (recommended)
-#' # print_metrics_table(res, include_overall = FALSE)
-#'
-#' # If you want overall accuracy too:
-#' print_metrics_table(res, include_overall = TRUE)
+#' print_metrics_table(res, include_overall_accuracy = TRUE)
 #' }
 #'
 #' @export
@@ -768,7 +767,7 @@ print_metrics_table <- function(results,
                                 digits = 4,
                                 include_macro = TRUE,
                                 include_weighted = TRUE,
-                                include_overall = FALSE) {
+                                include_overall_accuracy = FALSE) {
   if (is.null(results$class_labels) || is.null(results$support)) {
     stop("results must come from evaluate_single_las() or evaluate_two_las().", call. = FALSE)
   }
@@ -824,7 +823,7 @@ print_metrics_table <- function(results,
     out_rows <- c(out_rows, list(weighted_row))
   }
   
-  if (isTRUE(include_overall)) {
+  if (isTRUE(include_overall_accuracy)) {
     overall_row <- data.frame(
       Class     = "Overall accuracy",
       Support   = sum(support),
@@ -876,15 +875,20 @@ print_metrics_table <- function(results,
 #' @return A filtered \code{lidR::LAS} object.
 #'
 #' @examples
-#' \donttest{
-#' library(lidR)
-#' las <- readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
-#' if (!lidR::is.empty(las)) {
-#'   las_small <- las[seq_len(min(20000, lidR::npoints(las)))]
-#'   las_clean <- remove_noise_sor(las_small, height_thresh = 1, k = 10, zscore = 2.5)
-#'   lidR::npoints(las_small)
-#'   lidR::npoints(las_clean)
-#' }
+#' # Check for both lidR and dbscan before running
+#' if (requireNamespace("lidR", quietly = TRUE) && 
+#'     requireNamespace("dbscan", quietly = TRUE)) {
+#'   
+#'   las <- lidR::readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
+#'   
+#'   if (!lidR::is.empty(las)) {
+#'     las_small <- las[seq_len(min(20000, lidR::npoints(las)))]
+#'     las_clean <- remove_noise_sor(las_small, height_thresh = 1, k = 10, zscore = 2.5)
+#'     
+#'     # Optional: Print to console to show it worked
+#'     print(lidR::npoints(las_small))
+#'     print(lidR::npoints(las_clean))
+#'   }
 #' }
 #'
 #' @export
@@ -997,9 +1001,10 @@ remove_noise_sor <- function(las,
 #' @return Invisibly returns the printed data frame.
 #'
 #' @examples
-#' \dontrun{
+#' if (requireNamespace("lidR", quietly = TRUE)){
+#' 
 #' library(lidR)
-#' las <- readLAS("C:/path/to/your_file.laz")
+#' las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 #'
 #' print_confusion_matrix(
 #'   las,
@@ -1113,11 +1118,13 @@ print_confusion_matrix <- function(x,
 #' @return A ggplot object (invisibly).
 #'
 #' @examples
-#' \dontrun{
+#' if (requireNamespace("lidR", quietly = TRUE) && 
+#'     requireNamespace("ggplot2", quietly = TRUE)){
+#'     
 #' library(lidR)
 #'
 #' # Read LAS/LAZ
-#' las <- readLAS("C:/path/to/your_file.laz")
+#' las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 #'
 #' # Confusion matrix: True labels vs Predicted class (LAS Classification)
 #' cm <- table(True = las@data$label, Pred = las@data$Classification)
@@ -1426,9 +1433,9 @@ plot_confusion_matrix <- function(cm,
 #' }
 #'
 #' @examples
-#' \dontrun{
+#' if (requireNamespace("lidR", quietly = TRUE)){
 #' library(lidR)
-#' las <- readLAS("your_file.laz")
+#' las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 #'
 #' # 1) Predicted distribution (common case)
 #' las_class_distribution(las, field = "Classification")

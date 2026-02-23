@@ -49,10 +49,11 @@ two separate \code{lidR::LAS} objects.
 If they are not aligned, metrics will be meaningless.
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE)){
+
 library(lidR)
-truth <- readLAS("truth.laz")
-pred  <- readLAS("predicted.laz")
+truth <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
+pred  <- readLAS(system.file("extdata", "las", "tree21.laz", package = "FuelDeep3D"))
 
 res <- evaluate_two_las(
   truth, pred,

@@ -55,7 +55,10 @@ Note: \code{setup_env} is accepted for API compatibility; if you want it to actu
 environment setup, add a call such as \code{if (isTRUE(setup_env)) ensure_py_env()} before importing.
 }
 \examples{
-\dontrun{
+\donttest{
+if (requireNamespace("reticulate", quietly = TRUE) && 
+    reticulate::py_module_available("torch")) {
+    
 library(FuelDeep3D)
 library(reticulate)
 use_condaenv("pointnext", required = TRUE)
@@ -72,5 +75,6 @@ cfg <- config(
 
 out_las <- predict(cfg, mode = "overwrite", setup_env = FALSE)
 out_las
+}
 }
 }

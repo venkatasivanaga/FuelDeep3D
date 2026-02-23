@@ -47,9 +47,10 @@ Prints a confusion matrix as a readable table. You can pass either:
 }
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE)){
+
 library(lidR)
-las <- readLAS("C:/path/to/your_file.laz")
+las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 
 print_confusion_matrix(
   las,

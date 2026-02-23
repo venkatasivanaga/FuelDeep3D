@@ -49,7 +49,10 @@ the generated NPZ directories \code{train/}, \code{val/}, and \code{test/} under
 \code{cfg$out_dir} are deleted after training completes.
 }
 \examples{
-\dontrun{
+\donttest{
+if (requireNamespace("reticulate", quietly = TRUE) && 
+    reticulate::py_module_available("torch")) {
+    
 library(FuelDeep3D)
 library(reticulate)
 use_condaenv("pointnext", required = TRUE)
@@ -69,5 +72,6 @@ cfg <- config(
 
 res <- train(cfg, setup_env = FALSE)        # trains & saves best .pth
 
+}
 }
 }

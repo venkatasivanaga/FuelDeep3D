@@ -123,9 +123,10 @@ Instead, when \code{verbose = TRUE}, a class-to-color (and optional class-to-nam
 mapping is printed to the R console for clarity and reproducibility.
 }
 \examples{
-\dontrun{
+if (requireNamespace("lidR", quietly = TRUE) && interactive()){
+
 library(lidR)
-las <- readLAS("your_file.laz")
+las <-  readLAS(system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D"))
 
 # 1) Predicted classes (default palette; no legend overlay)
 predicted_plot3d(

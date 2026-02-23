@@ -52,8 +52,13 @@
 #' @return Invisibly returns \code{out_las} (the output file path).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # Check if required packages are available before running
+#' if (requireNamespace("lidR", quietly = TRUE) && 
+#'     requireNamespace("RCSF", quietly = TRUE)) {
+#'     
 #' library(FuelDeep3D)
+#' library(lidR)
 #'
 #' in_file  <- system.file("extdata", "las", "tree2.laz", package = "FuelDeep3D")
 #' out_file <- file.path(tempdir(), "tree2_ground.laz")
@@ -69,7 +74,8 @@
 #'   )
 #' )
 #' }
-#'
+#' 
+#' }
 #' @export
 add_ground_csf <- function(in_las,
                            out_las,
