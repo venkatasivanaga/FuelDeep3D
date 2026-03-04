@@ -6,13 +6,18 @@ import torch.nn.functional as F
 
 
 def knn_idx(coords, k: int):
-    """ Compute the indices of the k nearest neighbors for each point in coords. """
+    """Compute the indices of the k nearest neighbors for each point in coords (excluding self)."""
     with torch.no_grad():
         B, N, _ = coords.shape
-        xx = (coords ** 2).sum(-1, keepdim=True)
-        dist = xx + xx.transpose(1, 2) - 2 * coords @ coords.transpose(1, 2)
+        xx = (coords ** 2).sum(-1, keepdim=True)  # (B, N, 1)
+        dist = xx + xx.transpose(1, 2) - 2 * (coords @ coords.transpose(1, 2))  # (B, N, N)
         dist = torch.clamp(dist, min=0)
-        _, idx = torch.topk(dist, k=k, dim=-1, largest=False, sorted=False)
+
+        # Exclude self from neighbors by masking diagonal to +inf
+        diag_mask = torch.eye(N, device=coords.device, dtype=torch.bool).unsqueeze(0)  # (1, N, N)
+        dist = dist.masked_fill(diag_mask, float("inf"))
+
+        _, idx = torch.topk(dist, k=k, dim=-1, largest=False, sorted=False)  # (B, N, k)
     return idx
 
 def gather_batched(x, idx):

@@ -1,10 +1,11 @@
 # extdata/python/FuelDeep3D/infer.py
-from pathlib import Path  # <-- REQUIRED
+from pathlib import Path 
 import numpy as np
 import laspy
 import torch
 import sklearn.neighbors as skn
 
+from laspy import ExtraBytesParams
 from utils import estimate_ground_z, read_las_any
 
 __all__ = ["infer_on_las_path", "write_predictions_to_las"]

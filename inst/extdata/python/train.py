@@ -27,7 +27,9 @@ def train_model(config: dict):
 
     # ---- data loaders ----
     train_ds, val_ds, _, train_dl, val_dl, _ = make_loaders(
-        OUT_DIR=out_dir, BATCH_SIZE=batch_size, debug=True
+        OUT_DIR=out_dir, 
+        BATCH_SIZE=batch_size, 
+        debug=True
     )
 
     # ---- model/loss/opt ----
