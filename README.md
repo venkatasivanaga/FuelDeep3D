@@ -45,7 +45,7 @@ FuelDeep3D offers tools to:
 ```r
 install.packages('FuelDeep3D')
 
-# or
+# or use below command
 
 install.packages(
   "FuelDeep3D",
@@ -614,6 +614,7 @@ Please report any issue regarding the FuelDeep3D package to Venkata Siva Reddy N
 **FuelDeep3D package comes with no guarantee, expressed or implied, and
 the authors hold no responsibility for its use or the reliability of its
 outputs.**
+
 
 
 
